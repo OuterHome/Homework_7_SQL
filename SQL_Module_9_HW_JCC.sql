@@ -176,12 +176,6 @@ INNER JOIN city ON city.city_id = address.city_id
 INNER JOIN country ON country.country_id = city.country_id;
 
 # 7h. List the top five genres in gross revenue in descending order. (**Hint**: you may need to use the following tables: category, film_category, inventory, payment, and rental.)
-SELECT * from category;
-SELECT * from film_category;
-SELECT * from inventory;
-SELECT * from rental;
-SELECT * from payment;
-
 SELECT category.name, SUM(payment.amount) AS Gross_Revenue
 FROM category
 INNER JOIN film_category ON film_category.category_id = category.category_id
