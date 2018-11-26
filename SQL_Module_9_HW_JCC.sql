@@ -116,11 +116,10 @@ ORDER BY customer.last_name;
 # Use subqueries to display the titles of movies starting with the letters `K` and `Q` whose language is English.
 SELECT title
 FROM film
-WHERE title IN (
-	SELECT title
-	FROM film
-	WHERE language_id = '1' AND title LIKE 'K%' OR title LIKE 'Q%'
-	);
+WHERE title LIKE 'K%' OR title LIKE 'Q%' AND language_id IN (
+	SELECT language_id
+    FROM language
+    WHERE language.name LIKE 'English');
 
 # 7b. Use subqueries to display all actors who appear in the film `Alone Trip`.
 SELECT first_name, last_name #AND actor.last_name as Actor_Name
@@ -152,7 +151,7 @@ INNER JOIN category ON category.category_id = film_category.category_id
 WHERE category.name LIKE 'family';
 
 # 7e. Display the most frequently rented movies in descending order.
-SELECT film.title, COUNT(rental_id) as Total_Rentals
+SELECT film.title, COUNT(rental_id) AS Total_Rentals
 FROM film
 INNER JOIN inventory ON inventory.film_id = film.film_id
 INNER JOIN rental ON rental.inventory_id = inventory.inventory_id
@@ -160,7 +159,7 @@ GROUP BY film.title
 ORDER BY Total_Rentals DESC;
 
 # 7f. Write a query to display how much business, in dollars, each store brought in.
-SELECT store.store_id, sum(amount) as Revenue_Per_Store
+SELECT store.store_id, SUM(amount) AS Revenue_Per_Store
 FROM payment 
 INNER JOIN rental ON rental.rental_id = payment.rental_id
 INNER JOIN staff ON staff.staff_id = rental.staff_id
@@ -187,7 +186,7 @@ ORDER BY Gross_Revenue DESC
 LIMIT 5;
 
 # 8a. In your new role as an executive, you would like to have an easy way of viewing the Top five genres by gross revenue. Use the solution from the problem above to create a view. 
-create view Top_Five_Genres_Revenue as
+CREATE VIEW Top_Five_Genres_Revenue AS
 SELECT category.name, SUM(payment.amount) AS Gross_Revenue
 FROM category
 INNER JOIN film_category ON film_category.category_id = category.category_id
@@ -199,7 +198,8 @@ ORDER BY Gross_Revenue DESC
 LIMIT 5;
 
 # 8b. How would you display the view that you created in 8a?
-SELECT * from top_five_genres_revenue;
+SELECT * 
+FROM top_five_genres_revenue;
 
 # 8c. You find that you no longer need the view `top_five_genres`. Write a query to delete it.
 DROP VIEW IF EXISTS sakila.top_five_genres_revenue;
